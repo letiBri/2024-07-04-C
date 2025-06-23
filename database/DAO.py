@@ -28,7 +28,7 @@ class DAO():
         return result
 
     @staticmethod
-    def getShape():
+    def getShapeYear(year):
         cnx = DBConnect.get_connection()
         result = []
         if cnx is None:
@@ -37,9 +37,9 @@ class DAO():
             cursor = cnx.cursor(dictionary=True)
             query = """select distinct s.shape 
                         from sighting s 
-                        where s.shape is not null and s.shape <> ""
+                        where s.shape is not null and s.shape <> "" and year(s.`datetime`) = %s
                         order by s.shape """
-            cursor.execute(query)
+            cursor.execute(query, (year, ))
 
             for row in cursor:
                 result.append(row["shape"])

@@ -16,8 +16,8 @@ class Model:
     def getYears(self):
         return DAO.getYears()
 
-    def getShape(self):
-        return DAO.getShape()
+    def getShapeYear(self, year):
+        return DAO.getShapeYear(year)
 
     def buildGraph(self, year, shape):
         self._graph.clear()

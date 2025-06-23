@@ -1,4 +1,5 @@
 from database.DB_connect import DBConnect
+from model.arco import Arco
 from model.state import State
 from model.sighting import Sighting
 
@@ -107,6 +108,26 @@ class DAO():
 
             for row in cursor:
                 result.append(Sighting(**row))
+            cursor.close()
+            cnx.close()
+        return result
+
+    @staticmethod
+    def getEdges(year, shape, idMap):
+        cnx = DBConnect.get_connection()
+        result = []
+        if cnx is None:
+            print("Connessione fallita")
+        else:
+            cursor = cnx.cursor(dictionary=True)
+            query = """select s1.id as s1, s2.id as s2, (s2.longitude - s1.longitude) as peso
+                        from sighting s1, sighting s2 
+                        where s1.state = s2.state and s1.id <> s2.id and s1.longitude < s2.longitude and 
+                        year(s1.`datetime`)= %s and s1.shape = %s and year(s2.`datetime`)= %s and s2.shape = %s """
+            cursor.execute(query, (year, shape, year, shape))
+
+            for row in cursor:
+                result.append(Arco(idMap[row["s1"]], idMap[row["s2"]], row["peso"]))
             cursor.close()
             cnx.close()
         return result

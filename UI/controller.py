@@ -32,7 +32,20 @@ class Controller:
         numNodi, numArchi = self._model.getGraphDetails()
         self._view.txt_result1.controls.append(ft.Text(f"Numero di vertici: {numNodi}"))
         self._view.txt_result1.controls.append(ft.Text(f"Numero di archi: {numArchi}"))
+
+        archiPesoMaggiore = self._model.getPesiMaggiori()
+        self._view.txt_result1.controls.append(ft.Text("I 5 archi di peso maggiore sono:"))
+        for a in archiPesoMaggiore:
+            self._view.txt_result1.controls.append(ft.Text(f"{a[0]} --> {a[1]} | weight = {a[2]}"))
+
+        self._view.btn_path.disabled = False
         self._view.update_page()
 
     def handle_path(self, e):
-        pass
+        self._view.txt_result2.controls.clear()
+        path, score = self._model.getOptimalPath()
+        self._view.txt_result2.controls.append(ft.Text(f"Percorso ottimo trovato con score={score}"))
+        self._view.txt_result2.controls.append(ft.Text(f"I nodi attraversati sono {len(path)}:"))
+        for p in path:
+            self._view.txt_result2.controls.append(ft.Text(p))
+        self._view.update_page()
